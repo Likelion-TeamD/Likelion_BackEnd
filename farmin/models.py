@@ -29,12 +29,12 @@ class Post(models.Model):
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     like = models.ManyToManyField(User, related_name='likes' ,blank=True)
-    Post_pic = models.ManyToManyField(PostPics)
+    Post_pic = models.ManyToManyField(PostPics, blank = True)
 
     def __str__(self):
         return self.title 
 
-class Guestbook(models.Model):
+class Comment(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
