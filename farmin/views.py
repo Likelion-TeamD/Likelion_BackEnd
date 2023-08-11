@@ -6,6 +6,8 @@ from .serializers import *
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from rest_framework import status
 
 
 # Create your views here.
@@ -14,18 +16,57 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all().order_by('-create_date')
     serializer_class = PostSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = PostCommentSerializer(instance)
-        return Response(serializer.data)
-    def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
-class CommentViewSet(ModelViewSet):
+    def retrieve(self, request, *args, **kwargs):     #게시글에 딸린 댓글 목록을 보여준다.
+        instance = self.get_object()
+        serializer = PostCommentSerializer(instance)
+        return Response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    #프론 쪽과 통신할 때 사용할 수 있는 메서드인지 확인 필요
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        redirect_url = '/farmin/'
+        return Response(status = status.HTTP_303_SEE_OTHER, headers = {'Location': redirect_url})
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data = request.data, partial = partial)
+        serializer.is_valid(raise_exception= True)   
+        serializer.save()
+            
+        redirect_url = '/farmin/'
+        return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
+    
+class CommentViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필요한가?(feat. 피그마)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_object(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 
@@ -56,10 +97,10 @@ def detail(request, post_id):
 #     comment.save()
 #     return redirect('farmin:detail', post_id = post.id)
 
-def post_create(request):
-    user = User.objects.get(id = 1)
-    post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
-    post.save()
-    return redirect('farmin:index')
+# def post_create(request):
+#     user = User.objects.get(id = 1)
+#     post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
+#     post.save()
+#     return redirect('farmin:index')
 
 

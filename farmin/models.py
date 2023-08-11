@@ -24,8 +24,7 @@ class PostPics(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 50)
-    content = models.TextField()
+    title = models.CharField(max_length = 50, null = True)
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     like = models.ManyToManyField(User, related_name='likes' ,blank=True)
