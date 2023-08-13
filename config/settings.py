@@ -75,29 +75,26 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://farmer-in.netlify.app',
+    #'https://farmer-in-nongtori.netlify.app',
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+
+
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://farmer-in.netlify.app',
+    'https://farmer-in-nongtori.netlify.app',
     'http://localhost:3000',
     'http://127.0.0.1:8000',
-    ' https://e558-115-94-178-52.ngrok-free.apps',
+    'https://9bf2-121-135-149-228.ngrok-free.app/farmin/posts/'
+    'https://9bf2-121-135-149-228.ngrok-free.app/farmin/posts/?format=json',
     'http://127.0.0.1:5501/',
     #'배포할 url 채우기'
 ]
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
+
 CORS_ALLOW_HEADERS = [
     'access',
     'allow',
@@ -111,7 +108,13 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'ngrok-skip-browser-warning',
 ]
+
+
+
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+
 
 ROOT_URLCONF = 'config.urls'
 
