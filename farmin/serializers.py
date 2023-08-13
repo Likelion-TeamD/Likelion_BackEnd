@@ -9,6 +9,7 @@ class PostSerializer(ModelSerializer):
             'title',
             'create_date',
             'author',
+            'like',
             #추가 필드가 있다면 추가
         )
 
