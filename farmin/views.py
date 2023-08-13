@@ -71,7 +71,7 @@ class PostLikeViewset(ModelViewSet):
     queryset = Post.objects.all()  # Post 객체 가져오기
     serializer_class = PostSerializer
 
-    
+    #1명의 유저로 무한번 좋아요 수를 늘릴 수 없는 관계로 이렇게 늘렸습니다
     def create(self, request, *args, **kwargs):
         post_id = kwargs.get('pk')  # post의 id
         
