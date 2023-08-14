@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.pagination import PageNumberPagination
 
 
 # Create your views here.
@@ -21,19 +22,35 @@ from rest_framework.permissions import AllowAny
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all().order_by('-create_date')
     serializer_class = PostSerializer
+    pagination_class = PageNumberPagination
 
-    @permission_classes([AllowAny])
-    def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
+    #추가된 내용
+    def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
         serializer = self.get_serializer(queryset, many=True)
-        redirect_url = '/farmin/posts/?format=json'
-        return Response(serializer.data)
-        # return HttpResponse('dkssasdfaasdfasfdasf')
+        return Response(serializer.data)   #GET  https://"base_url:입력"/farmin/posts/?page=number
+    #
     
-    # def retrieve(self, request, *args, **kwargs):     #게시글에 딸린 댓글 목록을 보여준다.
-    #     instance = self.get_object()
-    #     serializer = PostCommentSerializer(instance)
+    # @api_view(['GET'])
+    # def posts(request):
+    #     posts = Post.objects.all()
+    #     paginator = PageNumberPagination()
+    #     paginator.page_size = 3
+    #     results =paginator.paginate_queryset(posts, request)
+    
+    
+    # @permission_classes([AllowAny])
+    # def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #     serializer = self.get_serializer(queryset, many=True)
     #     return Response(serializer.data)
+    #     # return HttpResponse('dkssasdfaasdfasfdasf')
     
     @permission_classes([AllowAny])
     def create(self, request, *args, **kwargs):
@@ -142,16 +159,6 @@ def detail(request, post_id):
     context = {'post': post, 'comment_list': comment_list}
     return render(request, 'farmin/post_detail.html', context)
 
-# def comment_create(request, post_id):
-#     post = get_object_or_404(Post, pk = post_id)
-#     comment = Comment(post = post,content = request.POST.get('content'), create_date = timezone.now())
-#     comment.save()
-#     return redirect('farmin:detail', post_id = post.id)
 
-# def post_create(request):
-#     user = User.objects.get(id = 1)
-#     post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
-#     post.save()
-#     return redirect('farmin:index')
 
 
