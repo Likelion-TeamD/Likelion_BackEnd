@@ -142,16 +142,6 @@ def detail(request, post_id):
     context = {'post': post, 'comment_list': comment_list}
     return render(request, 'farmin/post_detail.html', context)
 
-# def comment_create(request, post_id):
-#     post = get_object_or_404(Post, pk = post_id)
-#     comment = Comment(post = post,content = request.POST.get('content'), create_date = timezone.now())
-#     comment.save()
-#     return redirect('farmin:detail', post_id = post.id)
 
-# def post_create(request):
-#     user = User.objects.get(id = 1)
-#     post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
-#     post.save()
-#     return redirect('farmin:index')
 
 

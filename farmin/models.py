@@ -28,7 +28,6 @@ class Post(models.Model):
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
-    #like = models.ManyToManyField(User, related_name='likes' ,blank=True)-----> 우리는 슈퍼유저에서 좋아요 수를 무한정 늘릴 수 있으므로 위의 필드로 대체하는 것이 좋지 않을까?
     Post_pic = models.ManyToManyField(PostPics, blank = True)
 
     def __str__(self):
