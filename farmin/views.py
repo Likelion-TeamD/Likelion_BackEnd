@@ -114,24 +114,48 @@ class PostLikeViewset(ModelViewSet):
 
 
 
-class CommentViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필요한가?(feat. 피그마)
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+class GuestbookViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필요한가?(feat. 피그마)
+    queryset = Guestbook.objects.all()
+    serializer_class = GuestbookSerializer
+    pagination_class = PageNumberPagination
 
     @permission_classes([AllowAny])
     def create(self, request, *args, **kwargs):
-        serializer = self.get_object(data = request.data)
+        serializer = self.get_serializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    @permission_classes([AllowAny])
-    def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
+    def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @permission_classes([AllowAny])
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        redirect_url = '/comment/'
+        return Response(status = status.HTTP_303_SEE_OTHER, headers = {'Location': redirect_url})
+    
+    @permission_classes([AllowAny])
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data = request.data, partial = partial)
+        serializer.is_valid(raise_exception= True)   
+        serializer.save()
+            
+        redirect_url = '/comment/'
+        return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
 
 
 
@@ -148,16 +172,16 @@ class CommentViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필
 
 @permission_classes([AllowAny])
 def index(request):
-    post_list = Post.objects.order_by('-create_date')
-    context = {'post_list': post_list }
-    return render(request, 'farmin/post_list.html', context) #reqeust 다음에 들어갈 html이 필요함---> 이 부분은 프론트 쪽에서 받아와야 하는 건가?
+    guestbook_list = Guestbook.objects.order_by('-create_date')
+    context = {'guestbook_list': guestbook_list }
+    return render(request, 'farmin/guestbook_list.html', context) #reqeust 다음에 들어갈 html이 필요함---> 이 부분은 프론트 쪽에서 받아와야 하는 건가?
 
 @permission_classes([AllowAny])
-def detail(request, post_id):
-    post = Post.objects.get(id = post_id)
-    comment_list = Comment.objects.filter(post_id = post_id)
-    context = {'post': post, 'comment_list': comment_list}
-    return render(request, 'farmin/post_detail.html', context)
+def detail(request, guestbook_id):
+    guestbook = Guestbook.objects.get(id= guestbook_id)
+    guestbook_list = Guestbook.objects.filter(guestbook_id = guestbook_id)
+    context = {'guestbook': guestbook, 'guestbook_list': guestbook_list}
+    return render(request, 'farmin/guestbook_detail.html', context)
 
 
 

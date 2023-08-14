@@ -23,5 +23,5 @@ from farmin import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('farmin/', include('farmin.urls')),
+    path('guestbook/', include('farmin.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
