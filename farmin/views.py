@@ -14,9 +14,14 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
 
+import json
 
 # Create your views here.
 
+#농부아이콘 누를때 농부페이지로 이동하도록 하는거
+def farmer_page(request, farmer_id):
+    farmer = User.objects.get(pk=farmer_id)
+    return render(request, 'farmin/farmer_page.html', {'farmer': farmer})
 
 
 class PostViewSet(ModelViewSet):
@@ -113,7 +118,6 @@ class PostLikeViewset(ModelViewSet):
 
 
 
-
 class GuestbookViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필요한가?(feat. 피그마)
     queryset = Guestbook.objects.all()
     serializer_class = GuestbookSerializer
@@ -169,7 +173,6 @@ class GuestbookViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> �
 
 
 
-
 @permission_classes([AllowAny])
 def index(request):
     guestbook_list = Guestbook.objects.order_by('-create_date')
@@ -177,12 +180,37 @@ def index(request):
     return render(request, 'farmin/guestbook_list.html', context) #reqeust 다음에 들어갈 html이 필요함---> 이 부분은 프론트 쪽에서 받아와야 하는 건가?
 
 @permission_classes([AllowAny])
-def detail(request, guestbook_id):
-    guestbook = Guestbook.objects.get(id= guestbook_id)
-    guestbook_list = Guestbook.objects.filter(guestbook_id = guestbook_id)
-    context = {'guestbook': guestbook, 'guestbook_list': guestbook_list}
-    return render(request, 'farmin/guestbook_detail.html', context)
+def detail(request, post_id):
+    post = Post.objects.get(id = post_id)
+    comment_list = Comment.objects.filter(post_id = post_id)
+    context = {'post': post, 'comment_list': comment_list}
+    return render(request, 'farmin/post_detail.html', context)
+
+#0814구현
+@permission_classes([AllowAny])
+def mainpage_like(request):
+    # 좋아요가 많이 눌린 순으로 상위 3개의 구매글 가져오기
+    top_purchases = Post.objects.order_by('-likes')[:3]
+    return render(request, 'main_page.html', {'top_purchases': top_purchases})
+
+@permission_classes([AllowAny])
+def mainpage_guestbook(request):
+    # 최신순으로 방명록 조회
+    comments = Comment.objects.order_by('-create_date')
+    return render(request, 'main_page.html', {'comments': comments})
 
 
+
+# def comment_create(request, post_id):
+#     post = get_object_or_404(Post, pk = post_id)
+#     comment = Comment(post = post,content = request.POST.get('content'), create_date = timezone.now())
+#     comment.save()
+#     return redirect('farmin:detail', post_id = post.id)
+
+# def post_create(request):
+#     user = User.objects.get(id = 1)
+#     post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
+#     post.save()
+#     return redirect('farmin:index')
 
 

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>농부 페이지</title>
+</head>
+<body>
+    <h1>{{ farmer.Farmer_name }}님의 농부 페이지</h1>
+    <img src="{{ farmer.Farmer_pic.url }}" alt="{{ farmer.username }} 사진">
+    <p>이름: {{ farmer.Farmer_name }}</p>
+    <p>전화번호: {{ farmer.Farmer_tel }}</p>
+    <p>소개: {{ farmer.Farmer_intro }}</p>
+</body>
+</html>

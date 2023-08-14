@@ -24,7 +24,7 @@ class PostPics(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 50, null = True)
+    title = models.CharField(max_length = 10, null = True)
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
@@ -38,3 +38,8 @@ class Guestbook(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
+
+#여기 맞는지 확인필요
+class LikedUser(models.Model):
+    purchase = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey('farmin.User', on_delete=models.CASCADE)
