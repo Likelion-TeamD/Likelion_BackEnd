@@ -10,20 +10,21 @@ class PostSerializer(ModelSerializer):
             'create_date',
             'author',
             'like',
+            'modify_date',
             #추가 필드가 있다면 추가
         )
 
-class CommentSerializer(ModelSerializer):
+class GuestbookSerializer(ModelSerializer):
     class Meta:
-        model = Comment
+        model = Guestbook
         fields = '__all__'
 
             
         
 
-class PostCommentSerializer(ModelSerializer):
-    repls = CommentSerializer(many = True, read_only = True , source = 'comments')
+# class PostCommentSerializer(ModelSerializer):
+#     repls = CommentSerializer(many = True, read_only = True , source = 'comments')
 
-    class Meta:
-        model = Post
-        fields = '__all__'
+#     class Meta:
+#         model = Post
+#         fields = '__all__'

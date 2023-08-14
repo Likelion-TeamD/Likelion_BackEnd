@@ -33,7 +33,8 @@ class Post(models.Model):
     def __str__(self):
         return self.title 
 
-class Comment(models.Model):
+#Guestbook
+class Guestbook(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)

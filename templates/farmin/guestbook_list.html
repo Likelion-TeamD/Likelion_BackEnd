@@ -1,0 +1,9 @@
+{% if guestbook_list %}
+    <ul>
+    {% for guestbook in guestbook_list %}
+        <li><a href="/farmin/{{ guestbook.id }}/">{{ guestbook.content }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>질문이 없습니다.</p>
+{% endif %}

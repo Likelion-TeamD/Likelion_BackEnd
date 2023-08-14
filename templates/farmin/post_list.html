@@ -1,9 +1,0 @@
-{% if post_list %}
-    <ul>
-    {% for post in post_list %}
-        <li><a href="/farmin/{{ post.id }}/">{{ post.title }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>질문이 없습니다.</p>
-{% endif %}
