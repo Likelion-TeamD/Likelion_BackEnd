@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+</head>
+<body>
+    <h1>Top 3 Purchases</h1>
+    <div>
+        {% for purchase in top_purchases %}
+            <div>
+                <img src="{{ purchase.image.url }}" alt="{{ purchase.title }}">
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

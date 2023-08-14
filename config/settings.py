@@ -78,6 +78,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     #'https://farmer-in-nongtori.netlify.app',
+    'http://localhost:3000',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -134,13 +135,7 @@ TEMPLATES = [
     },
 ]
 
-
-MEDIA_URL = '/MEDIA/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -151,7 +146,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

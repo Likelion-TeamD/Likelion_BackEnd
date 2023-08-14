@@ -24,11 +24,10 @@ class PostPics(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 50, null = True)
+    title = models.CharField(max_length = 10, null = True)
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
-    #like = models.ManyToManyField(User, related_name='likes' ,blank=True)-----> 우리는 슈퍼유저에서 좋아요 수를 무한정 늘릴 수 있으므로 위의 필드로 대체하는 것이 좋지 않을까?
     Post_pic = models.ManyToManyField(PostPics, blank = True)
 
     def __str__(self):
@@ -38,3 +37,8 @@ class Comment(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
+
+#여기 맞는지 확인필요
+class LikedUser(models.Model):
+    purchase = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey('farmin.User', on_delete=models.CASCADE)
