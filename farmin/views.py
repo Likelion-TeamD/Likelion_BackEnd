@@ -21,7 +21,10 @@ import json
 #농부아이콘 누를때 농부페이지로 이동하도록 하는거
 def farmer_page(request, farmer_id):
     farmer = User.objects.get(pk=farmer_id)
-    return render(request, 'farmin/farmer_page.html', {'farmer': farmer})
+    context = {
+        'farmer': farmer
+    }
+    return render(request, 'farmin/farmer_page.html', context)
 
 def guestbook_page(request, farmer_id):
     # farmer_id에 따라 필요한 정보를 가져와서 처리하는 로직 추가
