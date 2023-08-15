@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class User(models.Model):
     Farmer_pic = models.ImageField(upload_to='Farmer_pic', null=True, default='default_pic')
+    Farmer_back_pic=models.ImageField(upload_to='Farmer_back_pic', null=True, default='default_pic')
     Farmer_name = models.CharField(max_length=50, null=True)
     Farmer_tel = models.CharField(max_length = 100, unique=True)
     Farmer_intro = models.TextField(null=True, default='반갑습니다')

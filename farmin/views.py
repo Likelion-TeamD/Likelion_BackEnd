@@ -1,13 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-from . models import *
+from .models import *
 from django.contrib.auth.models import User
 from .serializers import *
 from django.http import HttpResponse,JsonResponse
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import permission_classes
@@ -19,17 +17,39 @@ import json
 # Create your views here.
 
 #농부아이콘 누를때 농부페이지로 이동하도록 하는거
+@api_view(['GET'])
 def farmer_page(request, farmer_id):
-    farmer = User.objects.get(pk=farmer_id)
+    try:
+        farmer = User.objects.get(pk=farmer_id)
+    except User.DoesNotExist:
+        return Response(status=404)
+    
+    farmer_serializer = FarmerSerializer(farmer) 
+
+    farm_data = Farm.objects.filter(master=farmer_id).first()
+    if farm_data:
+        farm_serializer = FarmSerializer(farm_data)
+        farmer_data = farmer_serializer.data
+        farmer_data['Farm'] = farm_serializer.data
+    else:
+        farmer_data = farmer_serializer.data
+
+    return Response(farmer_data)
+
+def test(request, farmer_id):
+    # farmer_id에 따라 Farmer 객체 가져오기
+    farmer = User.objects.get(id=farmer_id)
+    farm = Farm.objects.get(master=farmer_id)
+    
     context = {
-        'farmer': farmer
+        'farmer': farmer,
+        'farm':farm
     }
     return render(request, 'farmin/farmer_page.html', context)
 
 #농부마다 다른 판매페이지
 def sale_page(request,farmer_id):
     context = {
-        'farmer': farmer,
         'farmer_id': farmer_id,
     }
     return render(request,'farmin/sale.html',context)
@@ -47,7 +67,6 @@ class PostViewSet(ModelViewSet):
     serializer_class = PostSerializer
     pagination_class = PageNumberPagination
 
-    #추가된 내용
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
