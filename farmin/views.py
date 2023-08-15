@@ -23,6 +23,13 @@ def farmer_page(request, farmer_id):
     farmer = User.objects.get(pk=farmer_id)
     return render(request, 'farmin/farmer_page.html', {'farmer': farmer})
 
+def guestbook_page(request, farmer_id):
+    # farmer_id에 따라 필요한 정보를 가져와서 처리하는 로직 추가
+    context = {
+        'farmer_id': farmer_id,
+    }
+    return render(request, 'farmin/guestbook_list.html', context)
+
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all().order_by('-create_date')
