@@ -19,12 +19,25 @@ class GuestbookSerializer(ModelSerializer):
         model = Guestbook
         fields = '__all__'
 
-            
+class FarmerSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'Farmer_pic',
+            'Farmer_back_pic',
+            'Farmer_name',
+            'Farmer_tel',
+            'Farmer_intro',
+        )
         
+class FarmPicsSerializer(ModelSerializer):
+    class Meta:
+        model = FarmPics
+        fields = ('Farm_pics',)
 
-# class PostCommentSerializer(ModelSerializer):
-#     repls = CommentSerializer(many = True, read_only = True , source = 'comments')
+class FarmSerializer(ModelSerializer):
+    Farm_pic = FarmPicsSerializer(many=True, read_only=True)
 
-#     class Meta:
-#         model = Post
-#         fields = '__all__'
+    class Meta:
+        model = Farm
+        fields = ('master', 'Farm_pic')

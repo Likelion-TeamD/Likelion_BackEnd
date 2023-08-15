@@ -7,12 +7,16 @@ app_name = 'farmin'
 
 urlpatterns = [
     #농부마다 다른 홈페이지 만들거라서 farmer_id 받아와서 작업
-    path('<int:farmer_id>/', views.farmer_page, name='farmer_page'),
+    path('<int:farmer_id>/', farmer_page, name='farmer_page'),
     #각 농부마다 다른 판매페이지
     path('<int:farmer_id>/sale/', views.sale_page,name='sale_page'),
      #각 농부마다 다른 방명록페이지
     path('<int:farmer_id>/guestbook/', views.guestbook_page, name='guestbook_page'),
     
+    #test
+    path('<int:farmer_id>/test/',views.test,name='test'),
+    #
+
     path('comment/', views.GuestbookViewSet.as_view({'post': 'create', 'get': 'list'})),
     path('<int:pk>/', views.GuestbookViewSet.as_view({'delete': 'destroy', 'patch': 'update'})),
     path('', views.index, name='index'),
