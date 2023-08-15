@@ -1,7 +1,7 @@
 {% if guestbook_list %}
     <ul>
     {% for guestbook in guestbook_list %}
-        <li><a href="/farmin/{{ guestbook.id }}/">{{ guestbook.content }}</a></li>
+        <li><a href="/guestbook/{{ guestbook.id }}/">{{ guestbook.content }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

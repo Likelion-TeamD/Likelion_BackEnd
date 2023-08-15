@@ -26,8 +26,16 @@ def farmer_page(request, farmer_id):
     }
     return render(request, 'farmin/farmer_page.html', context)
 
+#농부마다 다른 판매페이지
+def sale_page(request,farmer_id):
+    context = {
+        'farmer': farmer,
+        'farmer_id': farmer_id,
+    }
+    return render(request,'farmin/sale.html',context)
+
+#농부마다 다른 방명록페이지
 def guestbook_page(request, farmer_id):
-    # farmer_id에 따라 필요한 정보를 가져와서 처리하는 로직 추가
     context = {
         'farmer_id': farmer_id,
     }

@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>농부 판매 페이지</title>
+</head>
+<body>
+    <h1>{{ farmer.Farmer_name }}님의 판매 페이지</h1>
+    <p>농부프로필</p>
+    <img src="{% static 'rest_framework/img/farmer' %}{{ farmer.id }}.JPG" alt="{{ farmer.Farmer_name }} 프로필" width ='300' height = '300' >
+    <img src="{% static 'rest_framework/img/farmerback' %}{{ farmer.id }}.JPG" alt="{{ farmer.Farmer_name }} 배경" width ='300' height = '300' >
+    <p>이름: {{ farmer.Farmer_name }}</p>
+    <p>전화번호: {{ farmer.Farmer_tel }}</p>
+    <p>소개: {{ farmer.Farmer_intro }}</p>
+
+    <p>판매중인 상품</p>
+    <img src="{% static 'rest_framework/img/product1' %}.JPG" alt="판매중인 상품 1" width="300" height="300">
+    <img src="{% static 'rest_framework/img/product2' %}.JPG" alt="판매중인 상품 2" width="300" height="300">
+
+</body>
+</html>
