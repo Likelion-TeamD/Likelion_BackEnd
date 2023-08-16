@@ -95,16 +95,6 @@ class GuestbookViewSet(ModelViewSet):
 
 
 class PostViewSet(ModelViewSet):    
-    # @permission_classes([AllowAny])
-    # def update(self, request, *args, **kwargs):
-    #     partial = kwargs.pop('partial', False)
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance, data = request.data, partial = partial)
-    #     serializer.is_valid(raise_exception= True)   
-    #     serializer.save()
-            
-    #     redirect_url = '/farmin/'
-    #     return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
     queryset = Post.objects.all().order_by('-create_date')
     serializer_class = PostSerializer
     pagination_class = PageNumberPagination
@@ -158,23 +148,6 @@ class PostLikeViewset(ModelViewSet):
 
 
 
-#
-    
-    # @api_view(['GET'])
-    # def posts(request):
-    #     posts = Post.objects.all()
-    #     paginator = PageNumberPagination()
-    #     paginator.page_size = 3
-    #     results =paginator.paginate_queryset(posts, request)
-    
-    
-    # @permission_classes([AllowAny])
-    # def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
-    #     # return HttpResponse('dkssasdfaasdfasfdasf')
-
 
 
 
@@ -200,19 +173,4 @@ def mainpage_guestbook(request):
     # 최신순으로 방명록 조회
     comments = Guestbook.objects.order_by('-create_date')
     return render(request, 'main_page.html', {'comments': comments})
-
-
-
-# def comment_create(request, post_id):
-#     post = get_object_or_404(Post, pk = post_id)
-#     comment = Comment(post = post,content = request.POST.get('content'), create_date = timezone.now())
-#     comment.save()
-#     return redirect('farmin:detail', post_id = post.id)
-
-# def post_create(request):
-#     user = User.objects.get(id = 1)
-#     post = Post(author = user,title = request.POST.get('title'), content = request.POST.get('content'), create_date = timezone.now())
-#     post.save()
-#     return redirect('farmin:index')
-
 
