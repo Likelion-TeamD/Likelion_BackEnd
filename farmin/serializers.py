@@ -33,10 +33,6 @@ class PostSerializer(ModelSerializer):
         fields = (
             '__all__'
         )
-class PostPicsSerializer(ModelSerializer):
-    class Meta:
-        model = PostPics
-        fields = ('Post_id','Post_pics')
 
 #방명록
 class GuestbookSerializer(ModelSerializer):
