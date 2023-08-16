@@ -14,6 +14,7 @@ from pathlib import Path
 import json
 import os
 from django.core.exceptions import ImproperlyConfigured
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://farmer-in-nongtori.netlify.app/',
+    'http://localhost:3000/',
+    'https://508a-221-147-33-206.ngrok-free.app/',    
+]
+
+CORS_ALLOW_HEADERS =list(default_headers)+[
+    "accept", 
+    "authorization", 
+    "content-type", 
+    "user-agent", 
+    "x-csrftocken", 
+    "x-requested-with", 
+    "ngrok-skip-browser-warning", 
+    "Access-Control-Allow-Origin",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://farmer-in-nongtori.netlify.app',
+    'http://localhost:3000',
+]
+
+
 
 # Application definition
 
@@ -66,6 +90,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,47 +99,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-
-CORS_ALLOWED_ORIGINS = [
-    #'https://farmer-in-nongtori.netlify.app',
-    'http://localhost:3000',
-]
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
-
-
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://farmer-in-nongtori.netlify.app',
-    'http://localhost:3000',
-    'http://127.0.0.1:8000',
-    'https://9bf2-121-135-149-228.ngrok-free.app/farmin/posts/'
-    'https://9bf2-121-135-149-228.ngrok-free.app/farmin/posts/?format=json',
-    'http://127.0.0.1:5501/',
-    #'배포할 url 채우기'
-]
-
-CORS_ALLOW_HEADERS = [
-    'access',
-    'allow',
-    'control',
-    'origin',
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'ngrok-skip-browser-warning',
-]
-
-
-
-CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 
 ROOT_URLCONF = 'config.urls'
@@ -193,6 +177,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 추가된 내용
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,  # 페이지당 데이터 개수를 설정합니다.ㄴ
+    'PAGE_SIZE': 6,  # 페이지당 데이터 개수를 설정합니다.
 }
 

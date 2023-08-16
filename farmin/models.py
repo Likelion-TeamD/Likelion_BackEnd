@@ -21,13 +21,15 @@ class FarmPics(models.Model):
     Farm_pics = models.TextField(null=True, default='path_to_default_pic')
 
 class PostPics(models.Model):
-    Post_pics = models.ImageField(upload_to='MyFarm/photos/', null=True, default='default_pic')
+    Post_pics = models.TextField(null=True, default='default_pic')
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 10, null = True)
+    content = models.TextField(null = True)
+    title = models.CharField(max_length= 30, null = True)
+    price = models.TextField(null =True)
     create_date = models.DateTimeField()
-    modify_date = models.DateTimeField(null=True, blank=True)
+    # modify_date = models.DateTimeField(null=True, blank=True)
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
     Post_pic = models.ManyToManyField(PostPics, blank = True)
 
@@ -36,9 +38,10 @@ class Post(models.Model):
 
 #Guestbook
 class Guestbook(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
-    modify_date = models.DateTimeField(null=True, blank=True)
+    # modify_date = models.DateTimeField(null=True, blank=True)
 
 #여기 맞는지 확인필요
 class LikedUser(models.Model):
