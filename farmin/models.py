@@ -26,6 +26,8 @@ class PostPics(models.Model):
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(null = True)
+    title = models.CharField(max_length= 30, null = True)
+    price = models.TextField(null =True)
     create_date = models.DateTimeField()
     # modify_date = models.DateTimeField(null=True, blank=True)
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
