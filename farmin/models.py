@@ -30,15 +30,11 @@ class Post(models.Model):
     price = models.TextField(null =True)
     create_date = models.DateTimeField()
     like = models.PositiveIntegerField(default = 0) #양의 정수 필드: 기본값은 0에서 시작
+    Post_pics=models.TextField(null=True, default='default_pic')
 
     def __str__(self):
         return self.title 
     
-class PostPics(models.Model):
-    Post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
-    Post_pics = models.TextField(null=True, default='default_pic')
-
-
 #방명록 model
 class Guestbook(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
