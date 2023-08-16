@@ -5,12 +5,7 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'id',
-            'title',
-            'create_date',
-            'author',
-            'like',
-            'modify_date',
+            '__all__'
             #추가 필드가 있다면 추가
         )
 

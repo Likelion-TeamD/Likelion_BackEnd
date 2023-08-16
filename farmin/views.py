@@ -3,14 +3,18 @@ from .models import *
 from django.contrib.auth.models import User
 from .serializers import *
 from django.http import HttpResponse,JsonResponse
+from django.utils import timezone
+from datetime import datetime
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
 
 import json
 
@@ -55,74 +59,81 @@ def sale_page(request,farmer_id):
     return render(request,'farmin/sale.html',context)
 
 #농부마다 다른 방명록페이지
-def guestbook_page(request, farmer_id):
-    context = {
-        'farmer_id': farmer_id,
-    }
-    return render(request, 'farmin/guestbook_list.html', context)
+class GuestbookViewSet(ModelViewSet):
+    queryset = Guestbook.objects.all().order_by('-create_date')
+    serializer_class = GuestbookSerializer
+    pagination_class = PageNumberPagination
+
+    @action(detail=True, methods=['get'])
+    def list(self, request, farmer_id=None, *args, **kwargs):
+        guestbook_list = self.queryset.filter(author_id=farmer_id).order_by('-create_date')
+        page = self.paginate_queryset(guestbook_list)
+        serializer = self.get_serializer(page, many=True)
+
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def create(self, request, farmer_id=None, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['delete'])
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_303_SEE_OTHER)
 
 
-class PostViewSet(ModelViewSet):
+
+
+
+class PostViewSet(ModelViewSet):    
+    # @permission_classes([AllowAny])
+    # def update(self, request, *args, **kwargs):
+    #     partial = kwargs.pop('partial', False)
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance, data = request.data, partial = partial)
+    #     serializer.is_valid(raise_exception= True)   
+    #     serializer.save()
+            
+    #     redirect_url = '/farmin/'
+    #     return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
     queryset = Post.objects.all().order_by('-create_date')
     serializer_class = PostSerializer
     pagination_class = PageNumberPagination
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        
+    @action(detail=True, methods=['get'])
+    def list(self, request, farmer_id=None, *args, **kwargs):
+        guestbook_list = self.queryset.filter(author_id=farmer_id).order_by('-create_date')
+        page = self.paginate_queryset(guestbook_list)
+        serializer = self.get_serializer(page, many=True)
+
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)   #GET  https://"base_url:입력"/farmin/posts/?page=number
-    #
-    
-    # @api_view(['GET'])
-    # def posts(request):
-    #     posts = Post.objects.all()
-    #     paginator = PageNumberPagination()
-    #     paginator.page_size = 3
-    #     results =paginator.paginate_queryset(posts, request)
-    
-    
-    # @permission_classes([AllowAny])
-    # def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
-    #     # return HttpResponse('dkssasdfaasdfasfdasf')
-    
-    @permission_classes([AllowAny])
-    def create(self, request, *args, **kwargs):
+
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def create(self, request, farmer_id=None, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    #프론 쪽과 통신할 때 사용할 수 있는 메서드인지 확인 필요
-    
-    @permission_classes([AllowAny])
+
+    @action(detail=False, methods=['delete'])
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
-        redirect_url = '/farmin/'
-        return Response(status = status.HTTP_303_SEE_OTHER, headers = {'Location': redirect_url})
-    
-    @permission_classes([AllowAny])
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data = request.data, partial = partial)
-        serializer.is_valid(raise_exception= True)   
-        serializer.save()
-            
-        redirect_url = '/farmin/'
-        return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
+        return Response(status=status.HTTP_303_SEE_OTHER)
 
 
 
@@ -143,64 +154,26 @@ class PostLikeViewset(ModelViewSet):
         post.save()
 
         serializer = self.get_serializer(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)   
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
-
-
-
-
-
-
-
-
-class GuestbookViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> 필요한가?(feat. 피그마)
-    queryset = Guestbook.objects.all()
-    serializer_class = GuestbookSerializer
-    pagination_class = PageNumberPagination
-
-    @permission_classes([AllowAny])
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+#
     
-    @permission_classes([AllowAny])
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
-        redirect_url = '/comment/'
-        return Response(status = status.HTTP_303_SEE_OTHER, headers = {'Location': redirect_url})
+    # @api_view(['GET'])
+    # def posts(request):
+    #     posts = Post.objects.all()
+    #     paginator = PageNumberPagination()
+    #     paginator.page_size = 3
+    #     results =paginator.paginate_queryset(posts, request)
     
-    @permission_classes([AllowAny])
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data = request.data, partial = partial)
-        serializer.is_valid(raise_exception= True)   
-        serializer.save()
-            
-        redirect_url = '/comment/'
-        return Response(serializer.data ,status = status.HTTP_303_SEE_OTHER, headers ={'Location': redirect_url})
-
-
-
-
+    
+    # @permission_classes([AllowAny])
+    # def list(self, request, *args, **kwargs):     #게시글 목록을 보여준다.
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
+    #     # return HttpResponse('dkssasdfaasdfasfdasf')
 
 
 
@@ -212,16 +185,8 @@ class GuestbookViewSet(ModelViewSet):     #댓글 목록을 보여준다.----> �
 
 @permission_classes([AllowAny])
 def index(request):
-    guestbook_list = Guestbook.objects.order_by('-create_date')
-    context = {'guestbook_list': guestbook_list }
-    return render(request, 'farmin/guestbook_list.html', context) #reqeust 다음에 들어갈 html이 필요함---> 이 부분은 프론트 쪽에서 받아와야 하는 건가?
-
-@permission_classes([AllowAny])
-def detail(request, post_id):
-    post = Post.objects.get(id = post_id)
-    comment_list = Comment.objects.filter(post_id = post_id)
-    context = {'post': post, 'comment_list': comment_list}
-    return render(request, 'farmin/post_detail.html', context)
+    return HttpResponse('hello_python')
+    
 
 #0814구현
 @permission_classes([AllowAny])
@@ -233,7 +198,7 @@ def mainpage_like(request):
 @permission_classes([AllowAny])
 def mainpage_guestbook(request):
     # 최신순으로 방명록 조회
-    comments = Comment.objects.order_by('-create_date')
+    comments = Guestbook.objects.order_by('-create_date')
     return render(request, 'main_page.html', {'comments': comments})
 
 
