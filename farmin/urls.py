@@ -18,9 +18,6 @@ urlpatterns = [
     #test
     path('<int:farmer_id>/test/',views.test,name='test'),
     #
-
-    path('comment/', views.GuestbookViewSet.as_view({'post': 'create', 'get': 'list'})),
-    path('<int:pk>/', views.GuestbookViewSet.as_view({'delete': 'destroy', 'patch': 'update'})),
     path('', views.index, name='index'),
     # path('detail/<int:guestbook_id>/', views.detail, name='detail'),
 ]

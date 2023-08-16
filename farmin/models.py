@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class User(models.Model):
-    Farmer_pic = models.ImageField(upload_to='Farmer_pic', null=True, default='default_pic')
-    Farmer_back_pic=models.ImageField(upload_to='Farmer_back_pic', null=True, default='default_pic')
+    Farmer_pic = models.TextField(null=True, default='default_pic')
+    Farmer_back_pic=models.TextField(null=True, default='default_pic')
     Farmer_name = models.CharField(max_length=50, null=True)
     Farmer_tel = models.CharField(max_length = 100, unique=True)
     Farmer_intro = models.TextField(null=True, default='반갑습니다')
@@ -14,14 +14,14 @@ class User(models.Model):
         return self.Farmer_name
 
 class FarmPics(models.Model):
-    Farm_pics = models.ImageField(upload_to='MyFarm/photos/', null=True, default='default_pic')
+    Farm_pics = models.TextField(null=True, default='default_pic')
 
 class Farm(models.Model):
     master = models.ForeignKey(User, on_delete=models.CASCADE)
     Farm_pic = models.ManyToManyField(FarmPics)   
 
 class PostPics(models.Model):
-    Post_pics = models.ImageField(upload_to='MyFarm/photos/', null=True, default='default_pic')
+    Post_pics = models.TextField(null=True, default='default_pic')
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
