@@ -28,11 +28,11 @@ class FarmerSerializer(ModelSerializer):
 class FarmPicsSerializer(ModelSerializer):
     class Meta:
         model = FarmPics
-        fields = ('Farm_pics',)
+        fields = ('Farm_id', 'Farm_pics')
 
 class FarmSerializer(ModelSerializer):
-    Farm_pic = FarmPicsSerializer(many=True, read_only=True)
+    farm_pics = FarmPicsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Farm
-        fields = ('master', 'Farm_pic')
+        fields = ('id', 'master', 'farm_pics')

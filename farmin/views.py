@@ -28,28 +28,38 @@ def farmer_page(request, farmer_id):
     except User.DoesNotExist:
         return Response(status=404)
     
-    farmer_serializer = FarmerSerializer(farmer) 
+    farmer_serializer = FarmerSerializer(farmer)
 
-    farm_data = Farm.objects.filter(master=farmer_id).first()
-    if farm_data:
-        farm_serializer = FarmSerializer(farm_data)
-        farmer_data = farmer_serializer.data
-        farmer_data['Farm'] = farm_serializer.data
-    else:
-        farmer_data = farmer_serializer.data
+    return Response(farmer_serializer.data)
 
-    return Response(farmer_data)
+@api_view(['GET'])
+def farm_page(request, farmer_id):
+    try:
+        farmer = User.objects.get(pk=farmer_id)
+    except User.DoesNotExist:
+        return Response(status=404)
+    
+    farms = Farm.objects.filter(master=farmer)
+    farm_pics = FarmPics.objects.filter(Farm_id__in=farms)
+    farm_pics_serializer = FarmPicsSerializer(farm_pics, many=True)
+
+    return Response(farm_pics_serializer.data)
 
 def test(request, farmer_id):
-    # farmer_id에 따라 Farmer 객체 가져오기
-    farmer = User.objects.get(id=farmer_id)
-    farm = Farm.objects.get(master=farmer_id)
+    try:
+        farmer = User.objects.get(id=farmer_id)
+    except User.DoesNotExist:
+        return render(request, 'farmin/error.html', {'error_message': 'Farmer not found.'})
+    
+    farms = Farm.objects.filter(master=farmer)
+    farm_pics = FarmPics.objects.filter(Farm_id__in=farms)[:5]  # Get the first 5 FarmPics
     
     context = {
         'farmer': farmer,
-        'farm':farm
+        'farm_pics': farm_pics,
     }
-    return render(request, 'farmin/farmer_page.html', context)
+    return render(request, 'farmin/farm.html', context)
+
 
 #농부마다 다른 판매페이지
 def sale_page(request,farmer_id):
