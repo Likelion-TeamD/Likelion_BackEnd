@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>농장 페이지</title>
+</head>
+<body>
+    <h1>{{ farm.Farmer_name }}님의 농부 페이지</h1>
+    <p>농장 사진들</p>
+    {% for farm_pic in farm_pics %}
+        <img src="{{ farm_pic.Farm_pics }}" alt="농장 사진" width="300" height="300">
+    {% endfor %}
+</body>
+</html>
