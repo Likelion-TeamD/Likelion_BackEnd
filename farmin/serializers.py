@@ -1,19 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import *
 
-class PostSerializer(ModelSerializer):
-    class Meta:
-        model = Post
-        fields = (
-            '__all__'
-            #추가 필드가 있다면 추가
-        )
-
-class GuestbookSerializer(ModelSerializer):
-    class Meta:
-        model = Guestbook
-        fields = '__all__'
-
+#농부
 class FarmerSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -24,7 +12,8 @@ class FarmerSerializer(ModelSerializer):
             'Farmer_tel',
             'Farmer_intro',
         )
-        
+
+#농장     
 class FarmPicsSerializer(ModelSerializer):
     class Meta:
         model = FarmPics
@@ -36,3 +25,21 @@ class FarmSerializer(ModelSerializer):
     class Meta:
         model = Farm
         fields = ('id', 'master', 'farm_pics')
+
+#게시글
+class PostSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            '__all__'
+        )
+class PostPicsSerializer(ModelSerializer):
+    class Meta:
+        model = PostPics
+        fields = ('Post_id','Post_pics')
+
+#방명록
+class GuestbookSerializer(ModelSerializer):
+    class Meta:
+        model = Guestbook
+        fields = '__all__'
