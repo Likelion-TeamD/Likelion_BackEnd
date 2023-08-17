@@ -24,7 +24,8 @@ class FarmPics(models.Model):
 
 #판매중인 상품 model
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,  related_name='posts')   
+    author_pic = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length= 30, null = True)
     content = models.TextField(null = True)
     price = models.TextField(null =True)

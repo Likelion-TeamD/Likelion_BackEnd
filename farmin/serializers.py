@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer ,Serializer
+from rest_framework import serializers
 from .models import *
 
 #농부
@@ -33,10 +34,13 @@ class FarmSerializer(ModelSerializer):
 
 #게시글
 class PostSerializer(ModelSerializer):
+    author = serializers.CharField(source='author.Farmer_name')
+    author_pic = serializers.SerializerMethodField()
     class Meta:
         model = Post
         fields = (
             'author',
+            'author_pic',
             'title',
             'content',
             'price',
@@ -44,6 +48,9 @@ class PostSerializer(ModelSerializer):
             'like',
             'Post_pics'
         )
+
+    def get_author_pic(self, obj):  # get_author_pic 메서드 추가
+        return obj.author.Farmer_pic
 
 #방명록
 class GuestbookSerializer(ModelSerializer):
