@@ -9,7 +9,7 @@ class User(models.Model):
     Farmer_name = models.CharField(max_length=50, null=True)
     Farmer_tel = models.CharField(max_length=100, unique=True)
     Farmer_intro = models.TextField(null=True, default='반갑습니다')
-    Farmer_others = models.ManyToManyField('self')
+    Farmer_others = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.Farmer_name
@@ -40,4 +40,3 @@ class Guestbook(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
-    # modify_date = models.DateTimeField(null=True, blank=True)
