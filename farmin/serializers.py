@@ -6,6 +6,7 @@ class FarmerSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'Farmer_pic',
             'Farmer_back_pic',
             'Farmer_name',
