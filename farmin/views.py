@@ -70,7 +70,7 @@ class PostViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
-        return Response(status=status.HTTP_303_SEE_OTHER)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 #좋아요 구현
 class PostLikeViewset(ModelViewSet):
@@ -116,7 +116,7 @@ class GuestbookViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
-        return Response(status=status.HTTP_303_SEE_OTHER)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #좋아요 많은 순으로 2개    
 @api_view(['GET']) 
