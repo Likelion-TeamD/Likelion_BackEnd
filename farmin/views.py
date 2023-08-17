@@ -2,14 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.contrib.auth.models import User
 from .serializers import *
-from django.http import HttpResponse,JsonResponse
-from django.utils import timezone
-from datetime import datetime
 
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view
-from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
@@ -128,23 +125,15 @@ class GuestbookViewSet(ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_303_SEE_OTHER)
-
-
-@permission_classes([AllowAny])
-def index(request):
-    return HttpResponse('hello_python')
     
-
-#0814구현
 @permission_classes([AllowAny])
-def mainpage_like(request):
-    # 좋아요가 많이 눌린 순으로 상위 3개의 구매글 가져오기
-    top_purchases = Post.objects.order_by('-likes')[:3]
+def sorting_like(request):
+    top_purchases = Post.objects.order_by('-likes')[:2]
     return render(request, 'main_page.html', {'top_purchases': top_purchases})
 
-@permission_classes([AllowAny])
-def mainpage_guestbook(request):
-    # 최신순으로 방명록 조회
-    comments = Guestbook.objects.order_by('-create_date')
-    return render(request, 'main_page.html', {'comments': comments})
-
+# 최신 방명록 3개만 가져오도록
+@api_view(['GET']) 
+def sorting_guestbook(request, farmer_id):
+    comments = Guestbook.objects.filter(author_id=farmer_id).order_by('-create_date')[:3]
+    serializer = GuestbookSerializer(comments, many=True)
+    return Response(serializer.data)
