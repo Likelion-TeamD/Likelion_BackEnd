@@ -125,11 +125,13 @@ class GuestbookViewSet(ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_303_SEE_OTHER)
-    
-@permission_classes([AllowAny])
-def sorting_like(request):
-    top_purchases = Post.objects.order_by('-likes')[:2]
-    return render(request, 'main_page.html', {'top_purchases': top_purchases})
+
+#좋아요 많은 순으로 2개    
+@api_view(['GET']) 
+def sorting_like(request,farmer_id):
+    top_purchases = Post.objects.filter(author_id = farmer_id).order_by('-like')[:2]
+    serializer = PostSerializer(top_purchases, many=True)
+    return Response(serializer.data)
 
 # 최신 방명록 3개만 가져오도록
 @api_view(['GET']) 

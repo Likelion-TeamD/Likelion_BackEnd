@@ -31,11 +31,21 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            '__all__'
+            'author',
+            'title',
+            'content',
+            'price',
+            'create_date',
+            'like',
+            'Post_pics'
         )
 
 #방명록
 class GuestbookSerializer(ModelSerializer):
     class Meta:
         model = Guestbook
-        fields = '__all__'
+        fields = (
+            'author',
+            'content',
+            'create_date'
+        )
