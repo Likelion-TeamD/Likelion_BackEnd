@@ -15,7 +15,7 @@ urlpatterns = [
     path('<int:farmer_id>/sale/<int:pk>/', views.PostViewSet.as_view({'delete':'destroy'}), name = 'delete'),
     path('<int:farmer_id>/sale/<int:pk>/like/', PostLikeViewset.as_view({'post':'create'}), name = 'like'),
     #좋아요많은 순으로 2개 정렬
-    path('<int:farmer_id>/sortlike/',views.sorting_like, name='sorting_like'),
+    path('<int:farmer_id>/sortinglike/',views.sorting_like, name='sorting_like'),
     #각 농부마다 다른 방명록페이지
     path('<int:farmer_id>/guestbook/', views.GuestbookViewSet.as_view({'post': 'create', 'get': 'list'}), name='guestbook_page'),
     path('<int:farmer_id>/guestbook/<int:pk>/', views.GuestbookViewSet.as_view({'delete':'destroy'}), name='delete_guestbook'),
