@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.models import User
 from .serializers import *
 
+from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -139,3 +140,16 @@ def sorting_guestbook(request, farmer_id):
     comments = Guestbook.objects.filter(author_id=farmer_id).order_by('-create_date')[:3]
     serializer = GuestbookSerializer(comments, many=True)
     return Response(serializer.data)
+
+#이웃목록
+class NeighborListView(APIView):
+    def get(self, request, farmer_id):
+        try:
+            current_user = User.objects.get(id=farmer_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        neighbors = User.objects.exclude(id=farmer_id)[:3]
+        serializer = NeighborsSerializer({'neighbors': neighbors})
+
+        return Response(serializer.data)

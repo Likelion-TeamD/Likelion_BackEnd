@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer ,Serializer
 from .models import *
 
 #농부
@@ -12,6 +12,10 @@ class FarmerSerializer(ModelSerializer):
             'Farmer_tel',
             'Farmer_intro',
         )
+
+#이웃
+class NeighborsSerializer(Serializer):
+    neighbors = FarmerSerializer(many=True)
 
 #농장     
 class FarmPicsSerializer(ModelSerializer):

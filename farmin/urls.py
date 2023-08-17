@@ -20,5 +20,7 @@ urlpatterns = [
     path('<int:farmer_id>/guestbook/', views.GuestbookViewSet.as_view({'post': 'create', 'get': 'list'}), name='guestbook_page'),
     path('<int:farmer_id>/guestbook/<int:pk>/', views.GuestbookViewSet.as_view({'delete':'destroy'}), name='delete_guestbook'),
     #최신방명록에서 3개 추출
-    path('<int:farmer_id>/sortingguestbook/',views.sorting_guestbook, name='sorting_guestbook')
+    path('<int:farmer_id>/sortingguestbook/',views.sorting_guestbook, name='sorting_guestbook'),
+    #이웃목록
+    path('<int:farmer_id>/neighbor/', views.NeighborListView.as_view(), name='neighbor_list')
 ]
