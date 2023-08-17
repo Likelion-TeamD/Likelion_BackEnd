@@ -41,8 +41,3 @@ class Guestbook(models.Model):
     content = models.TextField()
     create_date = models.DateTimeField()
     # modify_date = models.DateTimeField(null=True, blank=True)
-
-#여기 맞는지 확인필요
-class LikedUser(models.Model):
-    purchase = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey('farmin.User', on_delete=models.CASCADE)
