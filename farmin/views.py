@@ -48,22 +48,18 @@ def farm_page(request, farmer_id):
 class PostViewSet(ModelViewSet):    
     queryset = Post.objects.all().order_by('-create_date')
     serializer_class = PostSerializer
-    pagination_class = PageNumberPagination
+
 
     @action(detail=True, methods=['get'])
     def list(self, request, farmer_id=None, *args, **kwargs):
-        guestbook_list = self.queryset.filter(author_id=farmer_id).order_by('-create_date')
-        page = self.paginate_queryset(guestbook_list)
-        serializer = self.get_serializer(page, many=True)
-
-        if page is not None:
-            return self.get_paginated_response(serializer.data)
+        post_list = self.queryset.filter(author_id=farmer_id).order_by('-create_date')
+        serializer = self.get_serializer(post_list, many=True)
 
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
     def create(self, request, farmer_id=None, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, context={'farmer_id': farmer_id})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -104,12 +100,7 @@ class GuestbookViewSet(ModelViewSet):
     @action(detail=True, methods=['get'])
     def list(self, request, farmer_id=None, *args, **kwargs):
         guestbook_list = self.queryset.filter(author_id=farmer_id).order_by('-create_date')
-        page = self.paginate_queryset(guestbook_list)
-        serializer = self.get_serializer(page, many=True)
-
-        if page is not None:
-            return self.get_paginated_response(serializer.data)
-
+        serializer = self.get_serializer(guestbook_list, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
