@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer ,Serializer
 from rest_framework import serializers
 from .models import *
+from django.contrib.auth import get_user_model
 
 #농부
 class FarmerSerializer(ModelSerializer):
@@ -39,6 +40,7 @@ class PostSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = (
+            'id',
             'author',
             'author_pic',
             'title',
@@ -51,12 +53,25 @@ class PostSerializer(ModelSerializer):
 
     def get_author_pic(self, obj):  # get_author_pic 메서드 추가
         return obj.author.Farmer_pic
+    
+    def create(self, validated_data):
+        farmer_id = self.context.get('farmer_id')
+        author_data = validated_data.pop('author', None)
+        author_pic_data = validated_data.pop('author_pic', None)
 
+        instance = Post.objects.create(author_id=farmer_id, **validated_data)
+
+        if author_pic_data:
+            instance.author_pic = author_pic_data
+            instance.save()
+
+        return instance
 #방명록
 class GuestbookSerializer(ModelSerializer):
     class Meta:
         model = Guestbook
         fields = (
+            'id',
             'author',
             'content',
             'create_date'
