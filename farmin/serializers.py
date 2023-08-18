@@ -39,6 +39,13 @@ class CustomDateTimeField(serializers.DateTimeField):
         local_time = timezone.localtime(value)
         formatted_time = local_time.strftime("%m/%d")
         return formatted_time
+    
+class DateTimeField(serializers.DateTimeField):
+    def to_representation(self, value):
+        local_time = timezone.localtime(value)
+        formatted_time = local_time.strftime("%m/%d %H:%m")
+        return formatted_time
+
 
 #게시글
 class PostSerializer(serializers.ModelSerializer):
@@ -75,8 +82,18 @@ class PostSerializer(serializers.ModelSerializer):
 
         return instance
 #방명록
-class GuestbookSerializer(ModelSerializer):
+class GuestbookSortingSerializer(ModelSerializer):
     create_date = CustomDateTimeField()
+    class Meta:
+        model = Guestbook
+        fields = (
+            'id',
+            'author',
+            'content',
+            'create_date'
+        )
+class GuestbookSerializer(ModelSerializer):
+    create_date = DateTimeField()
     class Meta:
         model = Guestbook
         fields = (

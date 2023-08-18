@@ -129,7 +129,7 @@ def sorting_like(request,farmer_id):
 @api_view(['GET']) 
 def sorting_guestbook(request, farmer_id):
     comments = Guestbook.objects.filter(author_id=farmer_id).order_by('-create_date')[:3]
-    serializer = GuestbookSerializer(comments, many=True)
+    serializer = GuestbookSortingSerializer(comments, many=True)
     return Response(serializer.data)
 
 #이웃목록
