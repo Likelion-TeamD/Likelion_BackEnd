@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer ,Serializer
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 #농부
 class FarmerSerializer(ModelSerializer):
@@ -33,10 +34,17 @@ class FarmSerializer(ModelSerializer):
         model = Farm
         fields = ('id', 'master', 'farm_pics')
 
+class CustomDateTimeField(serializers.DateTimeField):
+    def to_representation(self, value):
+        local_time = timezone.localtime(value)
+        formatted_time = local_time.strftime("%m월 %d일 %H시 %M분")
+        return formatted_time
+
 #게시글
-class PostSerializer(ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.Farmer_name')
     author_pic = serializers.SerializerMethodField()
+    create_date = CustomDateTimeField()  # 사용자 정의 DateTimeField 적용
     class Meta:
         model = Post
         fields = (
@@ -68,6 +76,7 @@ class PostSerializer(ModelSerializer):
         return instance
 #방명록
 class GuestbookSerializer(ModelSerializer):
+    create_date = CustomDateTimeField()
     class Meta:
         model = Guestbook
         fields = (
