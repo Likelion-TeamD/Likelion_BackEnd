@@ -18,6 +18,12 @@ import json
 
 # Create your views here.
 
+@api_view(['GET'])
+def farmer(request):
+    farmers = User.objects.all()
+    serializers = FarmerSerializer(farmers,many=True)
+    return Response(serializers.data)
+    
 #농부아이콘 누를때 농부페이지로 이동하도록 하는거
 @api_view(['GET'])
 def farmer_page(request, farmer_id):
