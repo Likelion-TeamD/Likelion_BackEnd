@@ -6,6 +6,7 @@ from . import views
 app_name = 'farmin'
 
 urlpatterns = [
+    path("all/",farmer, name="farmer"),
     #농부마다 다른 정보
     path('<int:farmer_id>/', farmer_page, name='farmer_page'),
     #농부마다 다른 농장 사진
