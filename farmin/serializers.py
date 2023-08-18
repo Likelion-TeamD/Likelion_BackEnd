@@ -37,7 +37,7 @@ class FarmSerializer(ModelSerializer):
 class CustomDateTimeField(serializers.DateTimeField):
     def to_representation(self, value):
         local_time = timezone.localtime(value)
-        formatted_time = local_time.strftime("%m월 %d일 %H시 %M분")
+        formatted_time = local_time.strftime("%m/%d %H:%M")
         return formatted_time
 
 #게시글
